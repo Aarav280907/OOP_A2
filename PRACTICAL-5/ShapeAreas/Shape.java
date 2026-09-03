@@ -1,3 +1,4 @@
+package ShapeAreas;
 
 import java.util.Scanner;
 abstract class Shape {
