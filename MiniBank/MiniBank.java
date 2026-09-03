@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 public class MiniBank {
 
-    // ================= CUSTOMER CLASS =================
+    // Stores the customer's contact and address details.
     static class Customer implements Cloneable {
         private String name;
         private String email;
@@ -18,7 +18,7 @@ public class MiniBank {
             return "CUST" + customerCounter;
         }
 
-        // Constructor
+        // Create a customer and assign a new customer ID.
         public Customer(String name, String email, String mobile, Address address) {
             this.name = name;
             this.email = email;
@@ -27,7 +27,7 @@ public class MiniBank {
             this.customerId = generateCustomerId();
         }
 
-        // ================= NESTED ADDRESS CLASS =================
+        // Keep the customer's address together as one value.
         public static class Address {
             private String line;
             private String city;
@@ -57,7 +57,7 @@ public class MiniBank {
             }
         }
 
-        // ================= GETTERS =================
+        // Expose the customer details needed by the bank.
         public String getName() {
             return name;
         }
@@ -78,13 +78,13 @@ public class MiniBank {
             return address;
         }
 
-        // ================= CLONE =================
+        // Copy the customer, including a separate copy of the address.
         @Override
         public Customer clone() {
             try {
                 Customer copy = (Customer) super.clone();
 
-                // Deep copy of Address
+                // Clone the address so the two customers do not share it.
                 copy.address = new Address(
                         address.getLine(),
                         address.getCity(),
@@ -98,7 +98,7 @@ public class MiniBank {
             }
         }
 
-        // ================= TO STRING =================
+        // Show the customer's details in a readable format.
         @Override
         public String toString() {
             return "Customer[" +
@@ -112,8 +112,8 @@ public class MiniBank {
     }
 
 
-    // ================= ACCOUNT CLASS =================
-    static class Account {
+    // Represents a bank account and its current balance.
+    public static class Account {
         private final String accountNumber;
         private String ownerName;
         private long balance;
@@ -126,7 +126,7 @@ public class MiniBank {
             return String.format("AC%04d", accountCounter);
         }
 
-        // Constructor with balance
+        // Open an account with an initial balance.
         public Account(String ownerName, long openingBalance) {
             this.ownerName = ownerName;
             this.balance = openingBalance;
@@ -134,12 +134,12 @@ public class MiniBank {
             this.active = true;
         }
 
-        // Constructor without balance
+        // Open an account with no opening balance.
         public Account(String ownerName) {
             this(ownerName, 0);
         }
 
-        // ================= DEPOSIT =================
+        // Add money only when the amount is positive.
         public void deposit(long amount) {
             if (amount > 0) {
                 balance += amount;
@@ -149,7 +149,7 @@ public class MiniBank {
             }
         }
 
-        // ================= WITHDRAW =================
+        // Withdraw money when the account has enough funds.
         public boolean withdraw(long amount) {
             if (amount > 0 && balance >= amount) {
                 balance -= amount;
@@ -159,7 +159,7 @@ public class MiniBank {
             return false;
         }
 
-        // ================= GETTERS =================
+        // Provide the account details used by the program.
         public String getAccountNumber() {
             return accountNumber;
         }
@@ -176,7 +176,7 @@ public class MiniBank {
             return active;
         }
 
-        // ================= toString() =================
+        // Show the account details in a readable format.
         @Override
         public String toString() {
             return "Account[" +
@@ -186,28 +186,28 @@ public class MiniBank {
                     "]";
         }
 
-        // ================= equals() =================
+        // Accounts are equal when they have the same account number.
         @Override
         public boolean equals(Object o) {
 
-            // Same object
+            // The same object is always equal to itself.
             if (this == o)
                 return true;
 
-            // Not an Account object
+            // Objects of other types cannot represent this account.
             if (!(o instanceof Account))
                 return false;
 
             Account account = (Account) o;
 
-            // Compare account numbers
+            // The account number uniquely identifies the account.
             return Objects.equals(
                     accountNumber,
                     account.accountNumber
             );
         }
 
-        // ================= hashCode() =================
+        // Keep the hash code consistent with equals().
         @Override
         public int hashCode() {
             return Objects.hash(accountNumber);
@@ -215,7 +215,7 @@ public class MiniBank {
     }
 
 
-    // ================= MAIN METHOD =================
+    // Run the bank demonstration from the command line.
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
@@ -224,7 +224,7 @@ public class MiniBank {
         System.out.println("          WELCOME TO MINIBANK");
         System.out.println("======================================");
 
-        // ================= CUSTOMER 1 INPUT =================
+        // Read the first customer's details.
         System.out.println("\nEnter details of Customer 1");
 
         System.out.print("Enter name: ");
@@ -257,7 +257,7 @@ public class MiniBank {
                 );
 
 
-        // ================= ACCOUNT 1 INPUT =================
+        // Open the first customer's account.
         System.out.print("\nEnter opening balance for Customer 1: ");
         long balance1 = sc.nextLong();
         sc.nextLine();
@@ -266,7 +266,7 @@ public class MiniBank {
                 new Account(customer1.getName(), balance1);
 
 
-        // ================= CUSTOMER 2 INPUT =================
+        // Read the second customer's details.
         System.out.println("\nEnter details of Customer 2");
 
         System.out.print("Enter name: ");
@@ -299,7 +299,7 @@ public class MiniBank {
                 );
 
 
-        // ================= ACCOUNT 2 INPUT =================
+        // Open the second customer's account.
         System.out.print("\nEnter opening balance for Customer 2: ");
         long balance2 = sc.nextLong();
         sc.nextLine();
@@ -308,7 +308,7 @@ public class MiniBank {
                 new Account(customer2.getName(), balance2);
 
 
-        // ================= DISPLAY CUSTOMERS =================
+        // Display both customers.
         System.out.println("\n======================================");
         System.out.println("         CUSTOMER DETAILS");
         System.out.println("======================================");
@@ -317,17 +317,17 @@ public class MiniBank {
         System.out.println(customer2);
 
 
-        // ================= DISPLAY ACCOUNTS =================
+        // Display both accounts.
         System.out.println("\n======================================");
         System.out.println("          ACCOUNT DETAILS");
         System.out.println("======================================");
 
-        // Java automatically calls toString()
+        // println() uses each account's toString() method here.
         System.out.println(account1);
         System.out.println(account2);
 
 
-        // ================= EQUALS =================
+        // Compare the two accounts by account number.
         System.out.println("\n======================================");
         System.out.println("             EQUALS TEST");
         System.out.println("======================================");
@@ -338,7 +338,7 @@ public class MiniBank {
         );
 
 
-        // ================= HASH CODE =================
+        // Display the hash code for each account.
         System.out.println("\nHashCode of Account 1: "
                 + account1.hashCode());
 
@@ -346,7 +346,7 @@ public class MiniBank {
                 + account2.hashCode());
 
 
-        // ================= CLONING =================
+        // Demonstrate copying a customer safely.
         System.out.println("\n======================================");
         System.out.println("             CLONE TEST");
         System.out.println("======================================");
@@ -360,7 +360,7 @@ public class MiniBank {
         System.out.println(clonedCustomer);
 
 
-        // ================= INSTANCEOF =================
+        // Check the runtime types of the objects.
         System.out.println("\n======================================");
         System.out.println("          INSTANCEOF TEST");
         System.out.println("======================================");
@@ -378,7 +378,7 @@ public class MiniBank {
         }
 
 
-        // ================= ACCOUNT OPERATIONS =================
+        // Demonstrate depositing and withdrawing money.
         System.out.println("\n======================================");
         System.out.println("          ACCOUNT OPERATION");
         System.out.println("======================================");
@@ -403,6 +403,27 @@ public class MiniBank {
 
         System.out.println("Final Account 1:");
         System.out.println(account1);
+
+        // Try the validators and parse one sample command.
+        System.out.println("\n======================================");
+        System.out.println("      VALIDATION AND COMMAND TEST");
+        System.out.println("======================================");
+
+        System.out.println("Mobile (valid): " + Validator.isValidMobile("9876543210"));
+        System.out.println("Mobile (invalid): " + Validator.isValidMobile("12345"));
+        System.out.println("Email (valid): " + Validator.isValidEmail("user@example.com"));
+        System.out.println("Email (invalid): " + Validator.isValidEmail("user@example"));
+        System.out.println("PAN (valid): " + Validator.isValidPan("ABCDE1234F"));
+        System.out.println("PAN (invalid): " + Validator.isValidPan("ABC123"));
+        System.out.println("IFSC (valid): " + Validator.isValidIfsc("SBIN0001234"));
+        System.out.println("IFSC (invalid): " + Validator.isValidIfsc("SBI123"));
+
+        Command command = CommandParser.parse("DEPOSIT AC0001 500");
+        System.out.println("Command type: " + command.type());
+        System.out.println("Command account: " + command.accountNumber());
+        System.out.println("Command amount: " + command.amount());
+
+        System.out.println("\n" + StatementFormatter.buildStatement(account1));
 
 
         System.out.println("\n======================================");
