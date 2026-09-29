@@ -1,8 +1,12 @@
+package util;
+
+import model.Account;
+
 public class StatementFormatter {
     private StatementFormatter() {
     }
 
-    public static String buildStatement(MiniBank.Account account) {
+    public static String buildStatement(Account account) {
         if (account == null) {
             throw new IllegalArgumentException("Account cannot be null.");
         }
