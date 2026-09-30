@@ -2,7 +2,10 @@ package model;
 
 public interface InterestBearing {
     double interestRate();
-    default double yearlyInterest(long balance) {
-        return (balance * interestRate()) / 100.0;
+
+    long getBalance();
+
+    default double yearlyInterest() {
+        return Math.max(0, getBalance()) * interestRate() / 100.0;
     }
 }

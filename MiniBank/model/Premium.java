@@ -1,3 +1,5 @@
 package model;
 
-public interface Premium { }
+/** Marker interface (no methods) - tags premium account types. */
+public interface Premium {
+}

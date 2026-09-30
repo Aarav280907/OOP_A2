@@ -8,17 +8,18 @@ public class SavingsAccount extends Account {
         this.minBalance = minBalance;
     }
 
-    public long getMinBalance() {
-        return minBalance;
-    }
+    public long getMinBalance() { return minBalance; }
 
     @Override
-    public double interestRate() {
-        return 4.0;
-    }
+    public double interestRate() { return 4.0; }
 
     @Override
     public boolean canWithdraw(long amount) {
-        return (balance - amount) >= minBalance;
+        return getBalance() - amount >= minBalance;
+    }
+
+    @Override
+    protected long availableToWithdraw() {
+        return Math.max(0, getBalance() - minBalance);
     }
 }

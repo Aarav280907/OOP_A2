@@ -3,20 +3,17 @@ package util;
 import model.Account;
 
 public class StatementFormatter {
-    private StatementFormatter() {
-    }
+    private StatementFormatter() { }
 
     public static String buildStatement(Account account) {
-        if (account == null) {
-            throw new IllegalArgumentException("Account cannot be null.");
-        }
-
-        StringBuilder statement = new StringBuilder();
-        statement.append("Account Statement\n");
-        statement.append("Account number: ").append(account.getAccountNumber()).append('\n');
-        statement.append("Owner: ").append(account.getOwnerName()).append('\n');
-        statement.append("Balance: Rs.").append(account.getBalance()).append('\n');
-        statement.append("Status: ").append(account.isActive() ? "Active" : "Inactive");
-        return statement.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("======= ACCOUNT STATEMENT =======\n");
+        sb.append("Account No : ").append(account.getAccountNumber()).append('\n');
+        sb.append("Owner      : ").append(account.getOwnerName()).append('\n');
+        sb.append("Type       : ").append(account.getClass().getSimpleName()).append('\n');
+        sb.append("Balance    : Rs.").append(account.getBalance()).append('\n');
+        sb.append("Status     : ").append(account.isActive() ? "Active" : "Inactive").append('\n');
+        sb.append("=================================");
+        return sb.toString();
     }
 }

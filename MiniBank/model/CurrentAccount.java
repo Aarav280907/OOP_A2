@@ -8,17 +8,18 @@ public class CurrentAccount extends Account {
         this.overdraftLimit = overdraftLimit;
     }
 
-    public long getOverdraftLimit() {
-        return overdraftLimit;
-    }
+    public long getOverdraftLimit() { return overdraftLimit; }
 
     @Override
-    public double interestRate() {
-        return 0.0;
-    }
+    public double interestRate() { return 0; }
 
     @Override
     public boolean canWithdraw(long amount) {
-        return (balance - amount) >= -overdraftLimit;
+        return getBalance() - amount >= -overdraftLimit;
+    }
+
+    @Override
+    protected long availableToWithdraw() {
+        return getBalance() + overdraftLimit;
     }
 }

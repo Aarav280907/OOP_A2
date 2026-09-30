@@ -22,6 +22,7 @@ public class Customer implements Cloneable {
         this.customerId = generateCustomerId();
     }
 
+    /** PR-3: public static nested class. */
     public static class Address {
         private String line;
         private String city;
@@ -53,21 +54,18 @@ public class Customer implements Cloneable {
     public Customer clone() {
         try {
             Customer copy = (Customer) super.clone();
-            copy.address = new Address(address.getLine(), address.getCity(), address.getPincode());
+            if (address != null) {
+                copy.address = new Address(address.getLine(), address.getCity(), address.getPincode());
+            }
             return copy;
         } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
+            throw new AssertionError(e);
         }
     }
 
     @Override
     public String toString() {
-        return "Customer[" +
-                customerId +
-                ", Name: " + name +
-                ", Email: " + email +
-                ", Mobile: " + mobile +
-                ", Address: " + address +
-                "]";
+        return "Customer[" + customerId + ", name=" + name + ", email=" + email
+                + ", mobile=" + mobile + ", address=" + address + "]";
     }
 }
