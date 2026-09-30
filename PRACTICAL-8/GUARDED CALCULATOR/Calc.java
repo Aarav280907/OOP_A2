@@ -18,15 +18,15 @@ public class Calc {
         System.out.println("Welcome to the Guarded Calculator!");
 
         while (!success) {
-            int num1 = 0, num2 = 0;
+            double num1 = 0, num2 = 0;
             char operator = ' ';
 
             try {
                 System.out.print("Enter the first number: ");
-                num1 = sc.nextInt();
+                num1 = sc.nextDouble();
 
                 System.out.print("Enter the second number: ");
-                num2 = sc.nextInt();
+                num2 = sc.nextDouble();
 
                 System.out.print("Enter the operator (+, -, *, /): ");
                 operator = sc.next().charAt(0);
