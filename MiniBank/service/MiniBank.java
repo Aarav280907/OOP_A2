@@ -31,6 +31,7 @@ public class MiniBank {
         demoPr6(accounts);
         demoPr7();
         demoPr8();
+        demoPr9();
 
         sc.close();
     }
@@ -242,6 +243,42 @@ public class MiniBank {
         try (AuditLogger logger = new AuditLogger("AUDIT")) {
             logger.log("Session summary for " + savings.getAccountNumber());
         }
+    }
+
+    // ================= PR-9 =================
+    private static void demoPr9() {
+        section("PR-9: Threads, race condition and synchronization");
+        final int threadCount = 10;
+        final int times = 2_000_000;
+        final long amount = 1;
+
+        Account shared = new SavingsAccount("Shared Account", 0, 0);
+        Thread[] threads = new Thread[threadCount];
+        for (int i = 0; i < threadCount; i++) {
+            threads[i] = new Thread(new AccountWorker(shared, times, amount), "Worker-" + (i + 1));
+        }
+
+        System.out.println("State of " + threads[0].getName() + " before start() : " + threads[0].getState());
+        for (Thread t : threads) {
+            t.start();
+        }
+        System.out.println("State of " + threads[0].getName() + " after start()  : " + threads[0].getState());
+
+        for (Thread t : threads) {
+            try {
+                t.join();                                   // wait for the worker to finish
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        System.out.println("State of " + threads[0].getName() + " after join()   : " + threads[0].getState());
+
+        long expected = (long) threadCount * times * amount;
+        System.out.println("Expected balance : Rs." + expected);
+        System.out.println("Final balance    : Rs." + shared.getBalance());
+        System.out.println(shared.getBalance() == expected
+                ? "Result           : CORRECT (thread-safe)"
+                : "Result           : WRONG (race condition, lost " + (expected - shared.getBalance()) + " updates)");
     }
 
     private static void section(String title) {

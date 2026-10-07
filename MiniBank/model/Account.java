@@ -39,8 +39,9 @@ public abstract class Account implements Transactable, InterestBearing {
     }
 
     // ---- PR-8: exceptions instead of boolean flags ----
+    // ---- PR-9: deposit / withdraw are synchronized (thread-safe) ----
     @Override
-    public void deposit(long amount) throws InvalidAmountException {
+    public synchronized void deposit(long amount) throws InvalidAmountException {
         if (amount <= 0) {
             throw new InvalidAmountException(amount);
         }
@@ -48,7 +49,7 @@ public abstract class Account implements Transactable, InterestBearing {
     }
 
     @Override
-    public boolean withdraw(long amount) throws InsufficientFundsException, InvalidAmountException {
+    public synchronized boolean withdraw(long amount) throws InsufficientFundsException, InvalidAmountException {
         if (amount <= 0) {
             throw new InvalidAmountException(amount);
         }
@@ -72,7 +73,9 @@ public abstract class Account implements Transactable, InterestBearing {
             System.out.println("Transferred Rs." + amount + " from " + accountNumber + " to " + to.accountNumber);
         } catch (BankException e) {
             if (debited) {
-                balance += amount;      // rollback the debit
+                synchronized (this) {
+                    balance += amount;  // rollback the debit
+                }
             }
             System.out.println("Transfer failed: " + e.getMessage());
             throw e;                    // rethrow to the caller
