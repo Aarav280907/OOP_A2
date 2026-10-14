@@ -8,9 +8,12 @@ import model.annotation.Id;
 import model.annotation.MaxLength;
 import model.annotation.Positive;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class Account implements Transactable, InterestBearing {
+public abstract class Account implements Transactable, InterestBearing, Serializable, Comparable<Account> {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     private final String accountNumber;
@@ -22,7 +25,14 @@ public abstract class Account implements Transactable, InterestBearing {
 
     private static long accountCounter = 0;
 
-    private static String generateAccountNumber() {
+    /** PR-14: after saved accounts are loaded, numbering continues after the highest one. */
+    public static synchronized void continueNumberingFrom(long highest) {
+        if (highest > accountCounter) {
+            accountCounter = highest;
+        }
+    }
+
+    private static synchronized String generateAccountNumber() {
         accountCounter++;
         return String.format("AC%04d", accountCounter);
     }
@@ -39,7 +49,6 @@ public abstract class Account implements Transactable, InterestBearing {
     }
 
     // ---- PR-8: exceptions instead of boolean flags ----
-    // ---- PR-9: deposit / withdraw are synchronized (thread-safe) ----
     @Override
     public synchronized void deposit(long amount) throws InvalidAmountException {
         if (amount <= 0) {
@@ -73,9 +82,7 @@ public abstract class Account implements Transactable, InterestBearing {
             System.out.println("Transferred Rs." + amount + " from " + accountNumber + " to " + to.accountNumber);
         } catch (BankException e) {
             if (debited) {
-                synchronized (this) {
-                    balance += amount;  // rollback the debit
-                }
+                balance += amount;      // rollback the debit
             }
             System.out.println("Transfer failed: " + e.getMessage());
             throw e;                    // rethrow to the caller
@@ -116,6 +123,12 @@ public abstract class Account implements Transactable, InterestBearing {
     @Override
     public int hashCode() {
         return Objects.hash(accountNumber);
+    }
+
+    /** PR-12: natural order = by account number. */
+    @Override
+    public int compareTo(Account other) {
+        return accountNumber.compareTo(other.accountNumber);
     }
 
     @Override

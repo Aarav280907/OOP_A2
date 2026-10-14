@@ -3,7 +3,7 @@ package service;
 import exception.InvalidAmountException;
 import model.Account;
 
-/** PR-9: a Runnable that deposits into one shared account many times. */
+/** PR-9: each worker thread makes many deposits on the same shared account. */
 public class AccountWorker implements Runnable {
     private final Account account;
     private final int times;
@@ -17,16 +17,14 @@ public class AccountWorker implements Runnable {
 
     @Override
     public void run() {
-        String name = Thread.currentThread().getName();
-        System.out.println(name + " started  (state = " + Thread.currentThread().getState() + ")");
+        System.out.println(Thread.currentThread().getName() + " started");
         for (int i = 0; i < times; i++) {
             try {
                 account.deposit(amount);
             } catch (InvalidAmountException e) {
-                System.out.println(name + " failed: " + e.getMessage());
-                return;
+                System.out.println("Deposit failed: " + e.getMessage());
             }
         }
-        System.out.println(name + " finished");
+        System.out.println(Thread.currentThread().getName() + " finished");
     }
 }
